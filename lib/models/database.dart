@@ -61,6 +61,17 @@ class AppDatabase extends _$AppDatabase {
     ));
   }
 
+  Future<int> getSumAmountByCategoryType(int type) async {
+    final query = selectOnly(transactions).join([
+      innerJoin(categories, categories.id.equalsExp(transactions.category_id))
+    ])
+      ..where(categories.type.equals(type))
+      ..addColumns([transactions.amount.sum()]);
+
+    final result = await query.getSingle();
+    return result.read(transactions.amount.sum()) ?? 0;
+  }
+
   Future deleteTransactionRepo(int id) async {
     return await (delete(transactions)..where((tbl) => tbl.id.equals(id))).go();
   }

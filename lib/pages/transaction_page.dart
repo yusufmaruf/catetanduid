@@ -220,13 +220,14 @@ class _TransactionPageState extends State<TransactionPage> {
                             detailController.text,
                             selectedCategory!.id)
                         : await update(
-                            widget.transactionWithCategory!.transaction.id,
-                            int.parse(amountController.text),
-                            selectedCategory!.id,
-                            DateTime.parse(dateController.text),
-                            detailController.text);
-                    setState(() {});
+                                widget.transactionWithCategory!.transaction.id,
+                                int.parse(amountController.text),
+                                selectedCategory!.id,
+                                DateTime.parse(dateController.text),
+                                detailController.text)
+                            .then((value) {});
                     Navigator.pop(context, true);
+                    // setState(() {});
                   },
                   child: Text("Save"))),
         ],

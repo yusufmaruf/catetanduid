@@ -53,11 +53,25 @@ class _HomePageState extends State<HomePage> {
                               SizedBox(
                                 height: 2,
                               ),
-                              Text(
-                                "Rp. 10.000.000",
-                                style: GoogleFonts.poppins(
-                                    color: Colors.white, fontSize: 14),
-                              )
+                              FutureBuilder<int>(
+                                future: database.getSumAmountByCategoryType(
+                                    1), // Ganti 2 dengan nilai type yang sesuai
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return CircularProgressIndicator(); // Atau widget lain untuk menunjukkan loading
+                                  } else if (snapshot.hasError) {
+                                    return Text("Error: ${snapshot.error}");
+                                  } else {
+                                    final totalAmount = snapshot.data ?? 0;
+                                    return Text(
+                                      "Rp. ${totalAmount.toStringAsFixed(2)}",
+                                      style: GoogleFonts.poppins(
+                                          color: Colors.white, fontSize: 14),
+                                    );
+                                  }
+                                },
+                              ),
                             ],
                           )
                         ],
@@ -80,18 +94,42 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Expense",
+                                "Income",
                                 style: GoogleFonts.poppins(
                                     color: Colors.white, fontSize: 12),
                               ),
                               SizedBox(
                                 height: 2,
                               ),
-                              Text(
-                                "Rp. 10.000.000",
-                                style: GoogleFonts.poppins(
-                                    color: Colors.white, fontSize: 14),
-                              )
+                              FutureBuilder<int>(
+                                  future: database.getSumAmountByCategoryType(
+                                      2), // Ganti 2 dengan nilai type yang sesuai
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.hasData) {
+                                      final totalAmount = snapshot.data ?? 0;
+                                      return Text(
+                                        "Rp. ${totalAmount.toStringAsFixed(2)}",
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Text("Error");
+                                    } else {
+                                      // Kondisi ketika snapshot.data == 0 atau snapshot.data == null
+                                      return Text(
+                                        "Rp. 0",
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      );
+                                    }
+                                  }),
                             ],
                           )
                         ],
@@ -124,6 +162,7 @@ class _HomePageState extends State<HomePage> {
                   if (snapshot.hasData) {
                     if (snapshot.data!.length > 0) {
                       return ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
@@ -151,14 +190,14 @@ class _HomePageState extends State<HomePage> {
                                       IconButton(
                                         icon: Icon(Icons.edit),
                                         onPressed: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      TransactionPage(
-                                                        transactionWithCategory:
-                                                            snapshot
-                                                                .data![index],
-                                                      )));
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                TransactionPage(
+                                                    transactionWithCategory:
+                                                        snapshot.data![index]),
+                                          ));
+                                          setState(() {});
                                         },
                                       )
                                     ],
