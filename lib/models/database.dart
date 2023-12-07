@@ -62,10 +62,15 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<int> getSumAmountByCategoryType(int type) async {
+    final now = DateTime.now();
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    final endOfMonth = DateTime(now.year, now.month + 1, 0);
     final query = selectOnly(transactions).join([
       innerJoin(categories, categories.id.equalsExp(transactions.category_id))
     ])
-      ..where(categories.type.equals(type))
+      ..where(categories.type.equals(type) &
+          transactions.transaction_date
+              .isBetweenValues(startOfMonth, endOfMonth))
       ..addColumns([transactions.amount.sum()]);
 
     final result = await query.getSingle();

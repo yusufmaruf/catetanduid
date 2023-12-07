@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:uas/models/database.dart';
 import 'package:uas/models/transaction_with_category.dart';
+import 'package:uas/pages/main_page.dart';
 
 class TransactionPage extends StatefulWidget {
   final TransactionWithCategory? transactionWithCategory;
@@ -76,7 +77,19 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Transaction")),
+      appBar: AppBar(
+        title: Text("Add Transaction"),
+        leading: IconButton(
+            splashRadius: 20,
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainPage(),
+                  ));
+            },
+            icon: Icon(Icons.arrow_back)),
+      ),
       body: SingleChildScrollView(
           child: SafeArea(
               child: Column(
@@ -215,18 +228,27 @@ class _TransactionPageState extends State<TransactionPage> {
                   onPressed: () async {
                     (widget.transactionWithCategory == null)
                         ? insert(
-                            int.parse(amountController.text),
-                            DateTime.parse(dateController.text),
-                            detailController.text,
-                            selectedCategory!.id)
+                                int.parse(amountController.text),
+                                DateTime.parse(dateController.text),
+                                detailController.text,
+                                selectedCategory!.id)
+                            .then((value) => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MainPage(),
+                                )))
                         : await update(
                                 widget.transactionWithCategory!.transaction.id,
                                 int.parse(amountController.text),
                                 selectedCategory!.id,
                                 DateTime.parse(dateController.text),
                                 detailController.text)
-                            .then((value) {});
-                    Navigator.pop(context, true);
+                            .then((value) => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MainPage(),
+                                )));
+                    // Navigator.pop(context, true);
                     // setState(() {});
                   },
                   child: Text("Save"))),

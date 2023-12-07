@@ -15,6 +15,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final database = AppDatabase();
   @override
+  void initState() {
+    // TODO: implement initState
+    database.getSumAmountByCategoryType(1);
+    database.getSumAmountByCategoryType(2);
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: SafeArea(
@@ -94,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Income",
+                                "Expanses",
                                 style: GoogleFonts.poppins(
                                     color: Colors.white, fontSize: 12),
                               ),

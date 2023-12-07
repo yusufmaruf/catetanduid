@@ -72,15 +72,22 @@ class _MainPageState extends State<MainPage> {
           visible: (currentIndex == 0) ? true : false,
           child: FloatingActionButton(
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(
-                builder: (context) => TransactionPage(
-                  transactionWithCategory: null,
-                ),
-              ))
-                  .then((value) {
-                setState(() {});
-              });
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TransactionPage(
+                      transactionWithCategory: null,
+                    ),
+                  ));
+              // Navigator.of(context)
+              //     .push(MaterialPageRoute(
+              //   builder: (context) => TransactionPage(
+              //     transactionWithCategory: null,
+              //   ),
+              // ))
+              //     .then((value) {
+              //   setState(() {});
+              // });
             },
             backgroundColor: Colors.blue,
             child: Icon(Icons.add),
